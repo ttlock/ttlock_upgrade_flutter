@@ -30,6 +30,7 @@ class _MyAppState extends State<MyApp> {
     try {
       platformVersion =
           await TtlockUpgrade.platformVersion ?? 'Unknown platform version';
+
       TtlockUpgrade.startUpgradeLock("lockData", "filePath",
           (status, progress) {
         // print("升级进度");
