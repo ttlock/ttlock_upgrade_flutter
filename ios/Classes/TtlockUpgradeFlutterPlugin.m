@@ -84,7 +84,7 @@
             dict[@"process"] = @(process);
             [self callbackCommand:call.method resultCode:0 data:dict errorCode:0 errorMessage:nil];
         } failBlock:^(UpgradeOpration type, UpgradeErrorCode code) {
-            [self callbackCommand:call.method resultCode:2 data:dict errorCode:code - 1 errorMessage:nil];
+            [self callbackCommand:call.method resultCode:2 data:dict errorCode:code errorMessage:nil];
         }];
     }else if ([@"stopUpgradeLock" isEqualToString:call.method]){
         [[TTLockDFU shareInstance] endUpgrade];
