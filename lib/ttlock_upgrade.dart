@@ -47,13 +47,13 @@ class TtlockUpgrade {
 
   static startUpgradeLock(
       String lockData,
-      String fileUrl,
+      String firmwarePackage,
       TTUpgradeProgressCallback progressCallback,
       TTUpgradeLockSuccessCallback successCallback,
       TTUpgradeFailedCallback failedCallback) {
     Map map = Map();
     map["lockData"] = lockData;
-    map["fileUrl"] = fileUrl;
+    map["firmwarePackage"] = firmwarePackage;
     invoke("startUpgradeLock", map, successCallback, progressCallback,
         failedCallback);
   }

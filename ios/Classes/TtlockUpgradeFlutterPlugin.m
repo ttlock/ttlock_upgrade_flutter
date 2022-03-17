@@ -45,9 +45,9 @@
       
       NSDictionary *dict = call.arguments;
       NSString *lockData = dict[@"lockData"];
-      NSString *fileUrl = dict[@"fileUrl"];
+      NSString *firmwarePackage = dict[@"firmwarePackage"];
 
-      [[TTLockDFU shareInstance] startDfuWithFirmwarePackage:fileUrl lockData:lockData successBlock:^(UpgradeOpration type, NSInteger progress) {
+      [[TTLockDFU shareInstance] startDfuWithFirmwarePackage:firmwarePackage lockData:lockData successBlock:^(UpgradeOpration type, NSInteger progress) {
           if (type == UpgradeOprationSuccess) {
               [TTLock getLockFeatureValueWithLockData:lockData success:^(NSString *lockData) {
                   NSMutableDictionary *dict = [NSMutableDictionary new];
