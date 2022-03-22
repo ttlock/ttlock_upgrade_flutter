@@ -17,6 +17,7 @@ import com.ttlock.bl.sdk.util.DigitUtil;
 import com.ttlock.bl.sdk.util.LogUtil;
 import com.ttlock.upgrade.ttlock_upgrade_flutter.constant.Command;
 import com.ttlock.upgrade.ttlock_upgrade_flutter.constant.Field;
+import com.ttlock.upgrade.ttlock_upgrade_flutter.model.TTLockUpgradeError;
 import com.ttlock.upgrade.ttlock_upgrade_flutter.model.TTLockUpgradeStatus;
 
 import java.io.File;
@@ -108,7 +109,7 @@ public class TtlockUpgradeFlutterPlugin implements FlutterPlugin, MethodCallHand
 
       @Override
       public void onError(int errorCode, String errorContent) {
-          errorCallbackCommand(Command.START_UPGRADE, errorCode, errorContent);
+          errorCallbackCommand(Command.START_UPGRADE, TTLockUpgradeError.upgradeFail.ordinal(), errorContent);
       }
     });
   }
@@ -127,7 +128,7 @@ public class TtlockUpgradeFlutterPlugin implements FlutterPlugin, MethodCallHand
 
              @Override
              public void onFail(LockError lockError) {
-                errorCallbackCommand(Command.START_UPGRADE, lockError.getIntErrorCode(), lockError.getErrorMsg());
+                errorCallbackCommand(Command.START_UPGRADE, TTLockUpgradeError.getSpecialValueError.ordinal(), lockError.getErrorMsg());
              }
            });
         }
