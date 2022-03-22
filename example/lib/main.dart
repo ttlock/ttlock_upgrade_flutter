@@ -31,7 +31,7 @@ class _MyAppState extends State<MyApp> {
       platformVersion =
           await TtlockUpgrade.platformVersion ?? 'Unknown platform version';
 
-      TtlockUpgrade.startUpgradeLock("lockData", "firmwarePackage",
+      TtlockUpgrade.startUpgradeLock("lockmac", "lockData", "firmwarePackage",
           (status, progress) {
         // print("升级进度");
         // print(status);

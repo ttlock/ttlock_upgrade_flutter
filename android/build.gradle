@@ -16,6 +16,9 @@ rootProject.allprojects {
     repositories {
         google()
         jcenter()
+        flatDir {
+            dirs 'libs'
+        }
     }
 }
 
@@ -25,6 +28,14 @@ android {
     compileSdkVersion 30
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 18
     }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+//    implementation 'com.ttlock:ttlock:3.1.9'
+    implementation 'com.google.code.gson:gson:2.6.2'
+    implementation(name: 'ttlock-release', ext: 'aar')
+    implementation 'no.nordicsemi.android:dfu:1.11.1'
 }
