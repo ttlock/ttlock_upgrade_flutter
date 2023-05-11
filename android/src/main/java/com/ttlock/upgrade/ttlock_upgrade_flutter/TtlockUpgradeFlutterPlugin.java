@@ -118,7 +118,7 @@ public class TtlockUpgradeFlutterPlugin implements FlutterPlugin, MethodCallHand
       new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
         @Override
         public void run() {
-           TTLockClient.getDefault().getLockSystemInfo(lockData, lockMac, new GetLockSystemInfoCallback() {
+           TTLockClient.getDefault().getLockSystemInfo(lockData, new GetLockSystemInfoCallback() {
              @Override
              public void onGetLockSystemInfoSuccess(DeviceInfo deviceInfo) {
                Map<String, String> data = new HashMap<>();
