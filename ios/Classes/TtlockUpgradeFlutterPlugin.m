@@ -1,8 +1,5 @@
 #import "TtlockUpgradeFlutterPlugin.h"
-#import <TTLockDFUOnPremise/TTLockDFUOnPremise.h>
-#import <TTLockOnPremise/TTLock.h>
-
-
+#import <TTLockDFU/TTLockDFU.h>
 
 
 
@@ -50,7 +47,7 @@
         NSString *lockData = dict[@"lockData"];
         NSString *firmwarePackage = dict[@"firmwarePackage"];
         
-        [[TTLockDFUOnPremise shareInstance] startDfuWithFirmwarePackage:firmwarePackage lockData:lockData successBlock:^(UpgradeOpration type, NSInteger progress) {
+        [[TTLockDFU shareInstance] startDfuWithFirmwarePackage:firmwarePackage lockData:lockData successBlock:^(UpgradeOpration type, NSInteger progress) {
             if (type == UpgradeOprationSuccess) {
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     // 需要延迟执行的代码
@@ -90,7 +87,7 @@
             [self callbackCommand:call.method resultCode:2 data:dict errorCode:code errorMessage:nil];
         }];
     }else if ([@"stopUpgradeLock" isEqualToString:call.method]){
-        [[TTLockDFUOnPremise shareInstance] endUpgrade];
+        [[TTLockDFU shareInstance] endUpgrade];
     }else if ([@"stopUpgradeGateway" isEqualToString:call.method]){
         [[TTGatewayDFU shareInstance] endUpgrade];
     }
