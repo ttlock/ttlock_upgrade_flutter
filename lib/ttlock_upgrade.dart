@@ -19,7 +19,7 @@ enum TTLockUpgradeError {
   upgradeFail
 }
 
-typedef TTUpgradeLockSuccessCallback = void Function(String lockData);
+typedef TTUpgradeLockSuccessCallback = void Function();
 typedef TTUpgradeFailedCallback = void Function(
     TTLockUpgradeError errorCode, String errorMsg);
 typedef TTUpgradeProgressCallback = void Function(
@@ -34,8 +34,7 @@ class TtlockUpgrade {
   static TTUpgradeFailedCallback _upgradeFailedCallback =
       (TTLockUpgradeError errorCode, String errorMessage) {};
 
-  static TTUpgradeLockSuccessCallback _upgradeLockSuccessCallback =
-      (String lockData) {};
+  static TTUpgradeLockSuccessCallback _upgradeLockSuccessCallback = () {};
   static TTUpgradeProgressCallback _upgradeProgressCallback =
       (TTLockUpgradeStatus status, int progress) {};
 
@@ -64,7 +63,7 @@ class TtlockUpgrade {
     invoke(
         "stopUpgradeLock",
         Map(),
-        (String lockData) {},
+        () {},
         (TTLockUpgradeStatus status, int progress) {},
         (TTLockUpgradeError error, String msg) {});
   }
@@ -118,7 +117,7 @@ class TtlockUpgrade {
   }
 
   static void _successCallback(String command, Map data) {
-    _upgradeLockSuccessCallback(data["lockData"]);
+    _upgradeLockSuccessCallback();
   }
 
   static void _progressCallback(String command, Map data) {
