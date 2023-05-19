@@ -58,7 +58,8 @@
             }
             
         } failBlock:^(UpgradeOpration type, UpgradeErrorCode code) {
-            [self callbackCommand:call.method resultCode:2 data:dict errorCode:code - 1 errorMessage:nil];
+            [self callbackCommand:call.method resultCode:2 data:dict errorCode:code errorMessage:nil];
+            NSLog(@"ios错误码：%ld", code);
         }];
     }else if ([@"startUpgradeGateway" isEqualToString:call.method]){
         NSDictionary *dict = call.arguments;
