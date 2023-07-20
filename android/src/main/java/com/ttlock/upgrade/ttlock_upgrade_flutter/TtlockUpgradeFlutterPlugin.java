@@ -51,6 +51,8 @@ public class TtlockUpgradeFlutterPlugin implements FlutterPlugin, MethodCallHand
   public static final int ResultStateProgress = 1;
   public static final int ResultStateFail = 2;
 
+  private boolean sdkIsInit;
+
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
     channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), Command.METHOD_CHANNEL_NAME);
@@ -58,7 +60,6 @@ public class TtlockUpgradeFlutterPlugin implements FlutterPlugin, MethodCallHand
     eventChannel = new EventChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), Command.EVENT_CHANNEL_NAME);
     eventChannel.setStreamHandler(this);
     context = flutterPluginBinding.getApplicationContext();
-    TTLockClient.getDefault().prepareBTService(context);
   }
 
   @Override
@@ -68,6 +69,9 @@ public class TtlockUpgradeFlutterPlugin implements FlutterPlugin, MethodCallHand
 //    } else {
 ////      result.notImplemented();
 //    }
+    if (!sdkIsInit) {
+      initSdk();
+    }
     params = (Map<String, String>) call.arguments;
     switch (call.method) {
       case Command.START_UPGRADE:
@@ -77,6 +81,10 @@ public class TtlockUpgradeFlutterPlugin implements FlutterPlugin, MethodCallHand
           stopUpgrade();
         break;
     }
+  }
+
+  private void initSdk() {
+    TTLockClient.getDefault().prepareBTService(context);
   }
 
   private void startUpgrade() {
