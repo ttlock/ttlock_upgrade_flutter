@@ -19,7 +19,8 @@ A new flutter plugin project.
   s.platform = :ios, '9.0'
   s.dependency 'iOSDFULibrary', '4.11.0'
   s.static_framework = true
-  s.vendored_frameworks = "Frameworks/**/*.framework"
+  # s.vendored_frameworks = "Frameworks/**/*.framework"
+  s.dependency 'TTLockDFUOnPremise', '2.1.2'
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }

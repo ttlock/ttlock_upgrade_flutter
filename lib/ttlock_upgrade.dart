@@ -19,7 +19,7 @@ enum TTLockUpgradeError {
   upgradeFail
 }
 
-typedef TTUpgradeLockSuccessCallback = void Function();
+typedef TTUpgradeSuccessCallback = void Function();
 typedef TTUpgradeFailedCallback = void Function(
     TTLockUpgradeError errorCode, String errorMsg);
 typedef TTUpgradeProgressCallback = void Function(
@@ -34,7 +34,7 @@ class TtlockUpgrade {
   static TTUpgradeFailedCallback _upgradeFailedCallback =
       (TTLockUpgradeError errorCode, String errorMessage) {};
 
-  static TTUpgradeLockSuccessCallback _upgradeLockSuccessCallback = () {};
+  static TTUpgradeSuccessCallback _upgradeLockSuccessCallback = () {};
   static TTUpgradeProgressCallback _upgradeProgressCallback =
       (TTLockUpgradeStatus status, int progress) {};
 
@@ -49,7 +49,7 @@ class TtlockUpgrade {
       String lockData,
       String firmwarePackage,
       TTUpgradeProgressCallback progressCallback,
-      TTUpgradeLockSuccessCallback successCallback,
+      TTUpgradeSuccessCallback successCallback,
       TTUpgradeFailedCallback failedCallback) {
     Map map = Map();
     map["lockmac"] = lockmac;
@@ -68,11 +68,33 @@ class TtlockUpgrade {
         (TTLockUpgradeError error, String msg) {});
   }
 
+  static startUpgradeGateway(
+      String gatewayMac,
+      String firmwarePackage,
+      TTUpgradeProgressCallback progressCallback,
+      TTUpgradeSuccessCallback successCallback,
+      TTUpgradeFailedCallback failedCallback) {
+    Map map = Map();
+    map["gatewayMac"] = gatewayMac;
+    map["firmwarePackage"] = firmwarePackage;
+    invoke("startUpgradeGateway", map, successCallback, progressCallback,
+        failedCallback);
+  }
+
+ static stopUpgradeGateway() {
+    invoke(
+        "stopUpgradeGateway",
+        Map(),
+        () {},
+        (TTLockUpgradeStatus status, int progress) {},
+        (TTLockUpgradeError error, String msg) {});
+  }
+
   static bool isListenEvent = false;
   static void invoke(
       String command,
       Object? parameter,
-      TTUpgradeLockSuccessCallback success,
+      TTUpgradeSuccessCallback success,
       TTUpgradeProgressCallback progress,
       TTUpgradeFailedCallback fail) {
     if (!isListenEvent) {

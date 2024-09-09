@@ -1,5 +1,6 @@
 #import "TtlockUpgradeFlutterPlugin.h"
 #import <TTLockDFUOnPremise/TTLockDFUOnPremise.h>
+#import <TTLockDFUOnPremise/TTGatewayDFU.h>
 
 
 
@@ -49,29 +50,37 @@
         
         [[TTLockDFUOnPremise shareInstance] startDfuWithFirmwarePackage:firmwarePackage lockData:lockData successBlock:^(UpgradeOpration type, NSInteger progress) {
             if (type == UpgradeOprationSuccess) {
-                [self callbackCommand:call.method resultCode:0 data:dict errorCode:0 errorMessage:nil];
+                [self callbackCommand:call.method resultCode:0 data:nil errorCode:0 errorMessage:nil];
             }else{
-                NSMutableDictionary *dict = [NSMutableDictionary new];
-                dict[@"status"] = @(type);
-                dict[@"progress"] = @(progress);
-                [self callbackCommand:call.method resultCode:1 data:dict errorCode:0 errorMessage:nil];
+                NSMutableDictionary *statusDict = [NSMutableDictionary new];
+                statusDict[@"status"] = @(type);
+                statusDict[@"progress"] = @(progress);
+                [self callbackCommand:call.method resultCode:1 data:statusDict errorCode:0 errorMessage:nil];
             }
             
         } failBlock:^(UpgradeOpration type, UpgradeErrorCode code) {
             [self callbackCommand:call.method resultCode:2 data:dict errorCode:code errorMessage:nil];
-            NSLog(@"ios错误码：%ld", code);
         }];
     }else if ([@"startUpgradeGateway" isEqualToString:call.method]){
         NSDictionary *dict = call.arguments;
         NSString *gatewayMac = dict[@"gatewayMac"];
-        NSString *accessToken = dict[@"accessToken"];
-        NSString *clientId = dict[@"clientId"];
-        NSNumber *gatewayId = dict[@"gatewayId"];
-        
-        
-       
+        NSString *firmwarePackage = dict[@"firmwarePackage"];
+        [[TTGatewayDFU shareInstance] startDfuWithFirmwarePackage:firmwarePackage gatewayMac:gatewayMac successBlock:^(UpgradeOpration type, NSInteger process) {
+            if (type == UpgradeOprationSuccess) {
+                [self callbackCommand:call.method resultCode:0 data:dict errorCode:0 errorMessage:nil];
+            }else{
+                NSMutableDictionary *dict = [NSMutableDictionary new];
+                dict[@"status"] = @(type);
+                dict[@"progress"] = @(process);
+                [self callbackCommand:call.method resultCode:1 data:dict errorCode:0 errorMessage:nil];
+            }
+        } failBlock:^(UpgradeOpration type, UpgradeErrorCode code) {
+            [self callbackCommand:call.method resultCode:2 data:dict errorCode:code errorMessage:nil];
+        }];
     }else if ([@"stopUpgradeLock" isEqualToString:call.method]){
-        [[TTLockDFUOnPremise shareInstance] endUpgrade];
+        [[TTGatewayDFU shareInstance] endUpgrade];
+    }else if ([@"stopUpgradeGateway" isEqualToString:call.method]){
+        [[TTGatewayDFU shareInstance] endUpgrade];
     }
     else {
         result(FlutterMethodNotImplemented);

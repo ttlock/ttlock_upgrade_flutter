@@ -5,6 +5,11 @@ PODS:
   - ttlock_upgrade_flutter (0.0.1):
     - Flutter
     - iOSDFULibrary (= 4.11.0)
+    - TTLockDFUOnPremise (= 2.1.2)
+  - TTLockDFUOnPremise (2.1.2):
+    - iOSDFULibrary (~> 4.11.0)
+    - TTLockOnPremise
+  - TTLockOnPremise (2.1.2)
   - ZIPFoundation (0.9.11)
 
 DEPENDENCIES:
@@ -14,6 +19,8 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - iOSDFULibrary
+    - TTLockDFUOnPremise
+    - TTLockOnPremise
     - ZIPFoundation
 
 EXTERNAL SOURCES:
@@ -25,9 +32,11 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   iOSDFULibrary: ca2a4da1f1680fe4957b0a33ad605c9e10f7ae7c
-  ttlock_upgrade_flutter: 35e5d1bfac40a32a576822e96301bbb5609868dd
+  ttlock_upgrade_flutter: adafef4753478501beff6b5f6949d5a0f736cc51
+  TTLockDFUOnPremise: 3fec4a1d1bc429f65e7298abfab8d501bd2401f0
+  TTLockOnPremise: 57a4865ebdad82427ca1439239fa243f960c494e
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
 PODFILE CHECKSUM: 8e679eca47255a8ca8067c4c67aab20e64cb974d
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.15.2
