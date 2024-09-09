@@ -36,7 +36,7 @@ class _MyAppState extends State<MyApp> {
         // print("升级进度");
         // print(status);
         // print(progress);
-      }, (String lockData) {
+      }, () {
         // print("升级返回成功");
       }, (errorCode, errorMsg) {
         // print("升级失败");

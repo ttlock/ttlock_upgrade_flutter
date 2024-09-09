@@ -42,23 +42,12 @@
     if ([@"getPlatformVersion" isEqualToString:call.method]) {
         result([@"iOS " stringByAppendingString:[[UIDevice currentDevice] systemVersion]]);
     }else if ([@"startUpgradeLock" isEqualToString:call.method]){
-        
         NSDictionary *dict = call.arguments;
         NSString *lockData = dict[@"lockData"];
         NSString *firmwarePackage = dict[@"firmwarePackage"];
-        
         [[TTLockDFU shareInstance] startDfuWithFirmwarePackage:firmwarePackage lockData:lockData successBlock:^(UpgradeOpration type, NSInteger progress) {
             if (type == UpgradeOprationSuccess) {
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    // 需要延迟执行的代码
-                    [TTLock getLockFeatureValueWithLockData:lockData success:^(NSString *lockData) {
-                        NSMutableDictionary *dict = [NSMutableDictionary new];
-                        dict[@"lockData"] = lockData;
-                        [self callbackCommand:call.method resultCode:0 data:dict errorCode:0 errorMessage:nil];
-                    } failure:^(TTError errorCode, NSString *errorMsg) {
-                        [self callbackCommand:call.method resultCode:2 data:dict errorCode:UpgradeErrorCodeUpgradeFail errorMessage:nil];
-                    }];
-                });
+                [self callbackCommand:call.method resultCode:0 data:nil errorCode:0 errorMessage:nil];
             }else{
                 NSMutableDictionary *dict = [NSMutableDictionary new];
                 dict[@"status"] = @(type);
@@ -75,11 +64,8 @@
         NSString *accessToken = dict[@"accessToken"];
         NSString *clientId = dict[@"clientId"];
         NSNumber *gatewayId = dict[@"gatewayId"];
-        
-        
         [[TTGatewayDFU shareInstance] startDfuWithClientId:clientId accessToken:accessToken gatewayId:gatewayId gatewayMac:gatewayMac successBlock:^(UpgradeOpration type, NSInteger process) {
             NSMutableDictionary *dict = [NSMutableDictionary new];
-            
             dict[@"status"] = @(type);
             dict[@"process"] = @(process);
             [self callbackCommand:call.method resultCode:0 data:dict errorCode:0 errorMessage:nil];
