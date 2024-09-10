@@ -7,4 +7,8 @@ public class Command {
     public static final String START_UPGRADE = "startUpgradeLock";
     public static final String STOP_UPGRADE = "stopUpgradeLock";
 
+    public static final String START_UPGRADE_GATEWAY = "startUpgradeGateway";
+
+    public static final String STOP_UPGRADE_GATEWAY = "stopUpgradeGateway";
+
 }

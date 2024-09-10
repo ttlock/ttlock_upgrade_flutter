@@ -2,18 +2,23 @@ group 'com.ttlock.upgrade.ttlock_upgrade_flutter'
 version '1.0'
 
 buildscript {
+    ext {
+        agp_version = '7.4.2'
+    }
     repositories {
+        mavenCentral()
         google()
         jcenter()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
+        classpath "com.android.tools.build:gradle:$agp_version"
     }
 }
 
 rootProject.allprojects {
     repositories {
+        mavenCentral()
         google()
         jcenter()
         flatDir {
@@ -37,5 +42,5 @@ dependencies {
 //    implementation 'com.ttlock:ttlock:3.1.9'
     implementation 'com.google.code.gson:gson:2.6.2'
     implementation(name: 'TTLockOnPremise', ext: 'aar')
-    implementation 'no.nordicsemi.android:dfu:1.11.1'
+    implementation 'no.nordicsemi.android:dfu:2.5.0'
 }
