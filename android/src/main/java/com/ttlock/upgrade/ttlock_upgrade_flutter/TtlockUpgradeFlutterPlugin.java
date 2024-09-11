@@ -13,6 +13,7 @@ import com.ttlock.bl.sdk.callback.GetLockSystemInfoCallback;
 import com.ttlock.bl.sdk.constant.Constant;
 import com.ttlock.bl.sdk.entity.DeviceInfo;
 import com.ttlock.bl.sdk.entity.LockError;
+import com.ttlock.bl.sdk.gateway.api.GatewayDfuClient;
 import com.ttlock.bl.sdk.util.DigitUtil;
 import com.ttlock.bl.sdk.util.LogUtil;
 import com.ttlock.upgrade.ttlock_upgrade_flutter.constant.Command;
@@ -80,6 +81,12 @@ public class TtlockUpgradeFlutterPlugin implements FlutterPlugin, MethodCallHand
       case Command.STOP_UPGRADE:
           stopUpgrade();
         break;
+      case Command.START_UPGRADE_GATEWAY:
+        startUpgradeGateway();
+        break;
+      case Command.STOP_UPGRADE_GATEWAY:
+        stopUpgradeGateway();
+        break;
     }
   }
 
@@ -146,6 +153,40 @@ public class TtlockUpgradeFlutterPlugin implements FlutterPlugin, MethodCallHand
   private void stopUpgrade() {
     LockDfuClient.getDefault().abortDfu();
     successCallbackCommand(Command.STOP_UPGRADE, new HashMap());
+  }
+
+  private void startUpgradeGateway() {
+    GatewayDfuClient.getDefault().startDfu(context, params.get(Field.CLIENT_ID), params.get(Field.ACCESS_TOKEN), Integer.valueOf(params.get(Field.GATEWAY_ID)), params.get(Field.GATEWAY_MAC), new com.ttlock.bl.sdk.gateway.callback.DfuCallback() {
+      @Override
+      public void onDfuSuccess(String deviceAddress) {
+        Map<String, String> data = new HashMap<>();
+        data.put(Field.GATEWAY_MAC, deviceAddress);
+        successCallbackCommand(Command.START_UPGRADE_GATEWAY, data);
+      }
+
+      @Override
+      public void onDfuAborted(String deviceAddress) {
+
+      }
+
+      @Override
+      public void onProgressChanged(String deviceAddress, int percent, float speed, float avgSpeed, int currentPart, int partsTotal) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("status", TTLockUpgradeStatus.upgrading.ordinal());
+        data.put("progress", percent);
+        progressCallbackCommand(Command.START_UPGRADE_GATEWAY, data);
+      }
+
+      @Override
+      public void onError() {
+        errorCallbackCommand(Command.START_UPGRADE_GATEWAY, TTLockUpgradeError.upgradeFail.ordinal(), "");
+      }
+    });
+  }
+
+  private void stopUpgradeGateway() {
+    GatewayDfuClient.getDefault().abortDfu();
+    successCallbackCommand(Command.STOP_UPGRADE_GATEWAY, new HashMap());
   }
 
   @Override
