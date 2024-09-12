@@ -78,7 +78,7 @@
             [self callbackCommand:call.method resultCode:2 data:dict errorCode:code errorMessage:nil];
         }];
     }else if ([@"stopUpgradeLock" isEqualToString:call.method]){
-        [[TTGatewayDFU shareInstance] endUpgrade];
+        [[TTLockDFUOnPremise shareInstance] endUpgrade];
     }else if ([@"stopUpgradeGateway" isEqualToString:call.method]){
         [[TTGatewayDFU shareInstance] endUpgrade];
     }
