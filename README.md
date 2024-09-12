@@ -1,11 +1,14 @@
 # ttlock_upgrade_flutter
 
-A new flutter plugin project.
+## Developers Email list
+ttlock-developers-email-list@googlegroups.com
 
 ## Lock Upgrade
 
 import 'package:ttlock_upgrade_flutter/ttlock_upgrade.dart';
 import 'package:ttlock_flutter/ttlock.dart';
+
+
 ```
 //step1   
 TTLock.setLockEnterUpgradeMode(lockData, () {
@@ -36,7 +39,12 @@ import 'package:ttlock_flutter/ttlock.dart';
 ```
 //step1   
 TTGateway.setGatewayEnterUpgradeMode(mac, () {
-    TtlockUpgrade.startUpgradeGateway(clientId, accessToken, gatewayId, gatewayMac, (status, progress) { }, () { }, (errorCode, errorMsg) { })
+
+    //step2   
+    TtlockUpgrade.startUpgradeGateway(clientId, accessToken, gatewayId, gatewayMac, (status, progress) { }, () {
+
+        print("upgrade success");
+     }, (errorCode, errorMsg) { })
  }, (errorCode, errorMsg) { })
 
 ```
