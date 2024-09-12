@@ -1,15 +1,49 @@
 # ttlock_upgrade_flutter
 
-A new flutter plugin project.
+## Developers Email list
+ttlock-developers-email-list@googlegroups.com
 
-## Getting Started
+## Lock Upgrade
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+import 'package:ttlock_upgrade_flutter/ttlock_upgrade.dart';
+import 'package:ttlock_flutter/ttlock.dart';
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
 
+```
+//step1   
+TTLock.setLockEnterUpgradeMode(lockData, () {
+    print("Set lock enter upgrade mode success");
+
+    //step2
+    TtlockUpgrade.startUpgradeLock("lockmac", lockData, "firmwarePackage", (status, progress) {
+    
+    }, () {
+        print("upgrade success");
+
+        //step3
+        TTLock.getLockSystemInfo(lockData, (lockSystemInfoModel) {
+          //upload new lockData from lockSystemInfoModel.lockData to your server
+        }, (errorCode, errorMsg) { });
+
+    }, (errorCode, errorMsg) {});
+
+}, (errorCode, errorMsg) {});
+
+```
+
+
+## Gateway Upgrade
+
+import 'package:ttlock_upgrade_flutter/ttlock_upgrade.dart';
+import 'package:ttlock_flutter/ttlock.dart';
+```
+//step1   
+TTGateway.setGatewayEnterUpgradeMode(mac, () {
+
+    //step2   
+    TtlockUpgrade.startUpgradeGateway(gatewayMac, firmwarePackage, (status, progress) { }, () {
+        print("upgrade success");
+     }, (errorCode, errorMsg) { })
+ }, (errorCode, errorMsg) { })
+
+```
