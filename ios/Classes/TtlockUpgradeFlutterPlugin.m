@@ -1,7 +1,7 @@
 #import "TtlockUpgradeFlutterPlugin.h"
 #import <TTLockDFUOnPremise/TTLockDFUOnPremise.h>
 #import <TTLockDFUOnPremise/TTGatewayDFU.h>
-
+#import <TTLockOnPremise/TTLock.h>
 
 
 @interface TtlockUpgradeFlutterPlugin() <FlutterStreamHandler>
@@ -50,7 +50,15 @@
         
         [[TTLockDFUOnPremise shareInstance] startDfuWithFirmwarePackage:firmwarePackage lockData:lockData successBlock:^(UpgradeOpration type, NSInteger progress) {
             if (type == UpgradeOprationSuccess) {
-                [self callbackCommand:call.method resultCode:0 data:nil errorCode:0 errorMessage:nil];
+                NSMutableDictionary *lockDataDict = [NSMutableDictionary new];
+                lockDataDict[@"lockData"] = lockData;
+                [TTLock getLockFeatureValueWithLockData:lockData success:^(NSString *newLockData) {
+                    lockDataDict[@"lockData"] = newLockData;
+                    [self callbackCommand:call.method resultCode:0 data:lockDataDict errorCode:0 errorMessage:nil];
+                } failure:^(TTError errorCode, NSString *errorMsg) {
+                    [self callbackCommand:call.method resultCode:0 data:lockDataDict errorCode:0 errorMessage:nil];
+                }];
+                
             }else{
                 NSMutableDictionary *statusDict = [NSMutableDictionary new];
                 statusDict[@"status"] = @(type);

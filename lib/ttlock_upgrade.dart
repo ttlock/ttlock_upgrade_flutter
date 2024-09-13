@@ -19,7 +19,8 @@ enum TTLockUpgradeError {
   upgradeFail
 }
 
-typedef TTUpgradeSuccessCallback = void Function();
+typedef TTUpgradeLockSuccessCallback = void Function(String lockDate);
+typedef TTSuccessCallback = void Function();
 typedef TTUpgradeFailedCallback = void Function(
     TTLockUpgradeError errorCode, String errorMsg);
 typedef TTUpgradeProgressCallback = void Function(
@@ -34,7 +35,8 @@ class TtlockUpgrade {
   static TTUpgradeFailedCallback _upgradeFailedCallback =
       (TTLockUpgradeError errorCode, String errorMessage) {};
 
-  static TTUpgradeSuccessCallback _upgradeLockSuccessCallback = () {};
+  static dynamic _upgradeSuccessCallback = () {};
+
   static TTUpgradeProgressCallback _upgradeProgressCallback =
       (TTLockUpgradeStatus status, int progress) {};
 
@@ -49,7 +51,7 @@ class TtlockUpgrade {
       String lockData,
       String firmwarePackage,
       TTUpgradeProgressCallback progressCallback,
-      TTUpgradeSuccessCallback successCallback,
+      TTUpgradeLockSuccessCallback successCallback,
       TTUpgradeFailedCallback failedCallback) {
     Map map = Map();
     map["lockmac"] = lockmac;
@@ -72,7 +74,7 @@ class TtlockUpgrade {
       String gatewayMac,
       String firmwarePackage,
       TTUpgradeProgressCallback progressCallback,
-      TTUpgradeSuccessCallback successCallback,
+      TTSuccessCallback successCallback,
       TTUpgradeFailedCallback failedCallback) {
     Map map = Map();
     map["gatewayMac"] = gatewayMac;
@@ -81,7 +83,7 @@ class TtlockUpgrade {
         failedCallback);
   }
 
- static stopUpgradeGateway() {
+  static stopUpgradeGateway() {
     invoke(
         "stopUpgradeGateway",
         Map(),
@@ -91,12 +93,8 @@ class TtlockUpgrade {
   }
 
   static bool isListenEvent = false;
-  static void invoke(
-      String command,
-      Object? parameter,
-      TTUpgradeSuccessCallback success,
-      TTUpgradeProgressCallback progress,
-      TTUpgradeFailedCallback fail) {
+  static void invoke(String command, Object? parameter, dynamic success,
+      TTUpgradeProgressCallback progress, TTUpgradeFailedCallback fail) {
     if (!isListenEvent) {
       isListenEvent = true;
       _listenChannel
@@ -104,9 +102,8 @@ class TtlockUpgrade {
           .listen(_onEvent, onError: _onError);
     }
     _upgradeProgressCallback = progress;
-    _upgradeLockSuccessCallback = success;
     _upgradeFailedCallback = fail;
-
+    _upgradeSuccessCallback = success;
     _commandChannel.invokeListMethod(command, parameter);
   }
 
@@ -139,7 +136,14 @@ class TtlockUpgrade {
   }
 
   static void _successCallback(String command, Map data) {
-    _upgradeLockSuccessCallback();
+    if (command == "startUpgradeLock") {
+      TTUpgradeLockSuccessCallback upgradeLockSuccessCallback =
+          _upgradeSuccessCallback;
+      upgradeLockSuccessCallback(data["lockDate"]);
+    } else if (command == "startUpgradeGateway") {
+      _upgradeSuccessCallback();
+    }
+
   }
 
   static void _progressCallback(String command, Map data) {
