@@ -36,12 +36,15 @@ class _MyAppState extends State<MyApp> {
         // print("升级进度");
         // print(status);
         // print(progress);
-      }, () {
+      }, (String newLockData) {
         // print("升级返回成功");
       }, (errorCode, errorMsg) {
         // print("升级失败");
         // print(errorCode);
       });
+
+
+
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
