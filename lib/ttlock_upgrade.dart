@@ -19,7 +19,7 @@ enum TTLockUpgradeError {
   upgradeFail
 }
 
-typedef TTUpgradeLockSuccessCallback = void Function(String lockDate);
+typedef TTUpgradeLockSuccessCallback = void Function(String lockData);
 typedef TTSuccessCallback = void Function();
 typedef TTUpgradeFailedCallback = void Function(
     TTLockUpgradeError errorCode, String errorMsg);
@@ -139,11 +139,10 @@ class TtlockUpgrade {
     if (command == "startUpgradeLock") {
       TTUpgradeLockSuccessCallback upgradeLockSuccessCallback =
           _upgradeSuccessCallback;
-      upgradeLockSuccessCallback(data["lockDate"]);
+      upgradeLockSuccessCallback(data["lockData"]);
     } else if (command == "startUpgradeGateway") {
       _upgradeSuccessCallback();
     }
-
   }
 
   static void _progressCallback(String command, Map data) {
