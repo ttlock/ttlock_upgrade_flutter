@@ -39,6 +39,9 @@
 
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    
+    __weak TtlockUpgradeFlutterPlugin *weakSelf = self;
+    
     if ([@"getPlatformVersion" isEqualToString:call.method]) {
         result([@"iOS " stringByAppendingString:[[UIDevice currentDevice] systemVersion]]);
     }else if ([@"startUpgradeLock" isEqualToString:call.method]){
@@ -51,19 +54,19 @@
                 lockDataDict[@"lockData"] = lockData;
                 [TTLock getLockFeatureValueWithLockData:lockData success:^(NSString *newLockData) {
                     lockDataDict[@"lockData"] = newLockData;
-                    [self callbackCommand:call.method resultCode:0 data:lockDataDict errorCode:0 errorMessage:nil];
+                    [weakSelf callbackCommand:call.method resultCode:0 data:lockDataDict errorCode:0 errorMessage:nil];
                 } failure:^(TTError errorCode, NSString *errorMsg) {
-                    [self callbackCommand:call.method resultCode:0 data:lockDataDict errorCode:0 errorMessage:nil];
+                    [weakSelf callbackCommand:call.method resultCode:0 data:lockDataDict errorCode:0 errorMessage:nil];
                 }];
             }else{
                 NSMutableDictionary *dict = [NSMutableDictionary new];
                 dict[@"status"] = @(type);
                 dict[@"progress"] = @(progress);
-                [self callbackCommand:call.method resultCode:1 data:dict errorCode:0 errorMessage:nil];
+                [weakSelf callbackCommand:call.method resultCode:1 data:dict errorCode:0 errorMessage:nil];
             }
             
         } failBlock:^(UpgradeOpration type, UpgradeErrorCode code) {
-            [self callbackCommand:call.method resultCode:2 data:dict errorCode:code errorMessage:nil];
+            [weakSelf callbackCommand:call.method resultCode:2 data:dict errorCode:code errorMessage:nil];
         }];
     }else if ([@"startUpgradeGateway" isEqualToString:call.method]){
         NSDictionary *dict = call.arguments;
@@ -71,13 +74,29 @@
         NSString *accessToken = dict[@"accessToken"];
         NSString *clientId = dict[@"clientId"];
         NSNumber *gatewayId = dict[@"gatewayId"];
-        [[TTGatewayDFU shareInstance] startDfuWithClientId:clientId accessToken:accessToken gatewayId:gatewayId gatewayMac:gatewayMac successBlock:^(UpgradeOpration type, NSInteger process) {
+        TTGatewayDFUType dfuType = [dict[@"dfuType"] intValue];
+        
+        [[TTGatewayDFU shareInstance] startDfuWithType:dfuType clientId:clientId accessToken:accessToken gatewayId:gatewayId gatewayMac:gatewayMac successBlock:^(UpgradeOpration type, NSInteger process) {
             NSMutableDictionary *dict = [NSMutableDictionary new];
             dict[@"status"] = @(type);
             dict[@"process"] = @(process);
-            [self callbackCommand:call.method resultCode:0 data:dict errorCode:0 errorMessage:nil];
+            [weakSelf callbackCommand:call.method resultCode:0 data:dict errorCode:0 errorMessage:nil];
         } failBlock:^(UpgradeOpration type, UpgradeErrorCode code) {
-            [self callbackCommand:call.method resultCode:2 data:dict errorCode:code errorMessage:nil];
+            [weakSelf callbackCommand:call.method resultCode:2 data:dict errorCode:code errorMessage:nil];
+        }];
+        
+        
+    }else if ([@"startUpgradeGatewayByFirmwarePackage" isEqualToString:call.method]){
+        NSDictionary *dict = call.arguments;
+        NSString *gatewayMac = dict[@"gatewayMac"];
+        NSString *firmwarePackage = dict[@"firmwarePackage"];
+   
+        [[TTGatewayDFU shareInstance] startDfuWithFirmwarePackage:firmwarePackage gatewayMac:gatewayMac successBlock:^(UpgradeOpration type, NSInteger process) {
+            NSMutableDictionary *dict = [NSMutableDictionary new];
+            dict[@"status"] = @(type);
+            dict[@"process"] = @(process);
+        } failBlock:^(UpgradeOpration type, UpgradeErrorCode code) {
+            [weakSelf callbackCommand:call.method resultCode:2 data:dict errorCode:code errorMessage:nil];
         }];
     }else if ([@"stopUpgradeLock" isEqualToString:call.method]){
         [[TTLockDFU shareInstance] endUpgrade];

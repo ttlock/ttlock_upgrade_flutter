@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 enum TTLockUpgradeStatus { preparing, upgrading, recovering }
 enum TTLockUpgradeReuslt { success, progress, fail }
+enum TTDfuType { net, bluetooth }
 
 enum TTLockUpgradeError {
   success,
@@ -71,6 +72,7 @@ class TtlockUpgrade {
   }
 
   static startUpgradeGateway(
+      TTDfuType dfuType,
       String clientId,
       String accessToken,
       int gatewayId,
@@ -79,12 +81,26 @@ class TtlockUpgrade {
       TTSuccessCallback successCallback,
       TTUpgradeFailedCallback failedCallback) {
     Map map = Map();
+    map["dfuType"] = dfuType;
     map["clientId"] = clientId;
     map["accessToken"] = accessToken;
     map["gatewayId"] = gatewayId;
     map["gatewayMac"] = gatewayMac;
     invoke("startUpgradeGateway", map, successCallback, progressCallback,
         failedCallback);
+  }
+
+  static startUpgradeGatewayByFirmwarePackage(
+      String firmwarePackage,
+      String gatewayMac,
+      TTUpgradeProgressCallback progressCallback,
+      TTSuccessCallback successCallback,
+      TTUpgradeFailedCallback failedCallback) {
+    Map map = Map();
+    map["firmwarePackage"] = firmwarePackage;
+    map["gatewayMac"] = gatewayMac;
+    invoke("startUpgradeGatewayByFirmwarePackage", map, successCallback,
+        progressCallback, failedCallback);
   }
 
   static stopUpgradeGateway() {
