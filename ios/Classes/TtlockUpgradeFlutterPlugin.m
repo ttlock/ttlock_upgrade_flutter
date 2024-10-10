@@ -52,8 +52,8 @@
             if (type == UpgradeOprationSuccess) {
                 NSMutableDictionary *lockDataDict = [NSMutableDictionary new];
                 lockDataDict[@"lockData"] = lockData;
-                [TTLock getLockFeatureValueWithLockData:lockData success:^(NSString *newLockData) {
-                    lockDataDict[@"lockData"] = newLockData;
+                [TTLock getLockSystemInfoWithLockData:lockData success:^(TTSystemInfoModel *systemModel) {
+                    lockDataDict[@"lockData"] = [systemModel lockData];
                     [weakSelf callbackCommand:call.method resultCode:0 data:lockDataDict errorCode:0 errorMessage:nil];
                 } failure:^(TTError errorCode, NSString *errorMsg) {
                     [weakSelf callbackCommand:call.method resultCode:0 data:lockDataDict errorCode:0 errorMessage:nil];
