@@ -16,5 +16,9 @@ public class Field {
     public static final String ACCESS_TOKEN = "accessToken";
 
     public static final String GATEWAY_ID = "gatewayId";
+
+    public static final String DFU_TYPE = "dfuType";
+
+    public static final String FW_PACKAGE = "firmwarePackage";
     
 }

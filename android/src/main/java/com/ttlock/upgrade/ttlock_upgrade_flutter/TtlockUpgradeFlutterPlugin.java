@@ -54,6 +54,8 @@ public class TtlockUpgradeFlutterPlugin implements FlutterPlugin, MethodCallHand
 
   private boolean sdkIsInit;
 
+  private String cacheGatewayMac;
+
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
     channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), Command.METHOD_CHANNEL_NAME);
@@ -156,7 +158,50 @@ public class TtlockUpgradeFlutterPlugin implements FlutterPlugin, MethodCallHand
   }
 
   private void startUpgradeGateway() {
-    GatewayDfuClient.getDefault().startDfu(context, params.get(Field.CLIENT_ID), params.get(Field.ACCESS_TOKEN), Integer.valueOf(params.get(Field.GATEWAY_ID)), params.get(Field.GATEWAY_MAC), new com.ttlock.bl.sdk.gateway.callback.DfuCallback() {
+    String gatewayMac = params.get(Field.GATEWAY_MAC);
+    if (!gatewayMac.equals(cacheGatewayMac)) {
+      cacheGatewayMac = gatewayMac;
+      GatewayDfuClient.getDefault().startDfu(context, params.get(Field.CLIENT_ID), params.get(Field.ACCESS_TOKEN), Integer.valueOf(params.get(Field.GATEWAY_ID)), params.get(Field.GATEWAY_MAC), new com.ttlock.bl.sdk.gateway.callback.DfuCallback() {
+        @Override
+        public void onDfuSuccess(String deviceAddress) {
+          cacheGatewayMac = "";
+          Map<String, String> data = new HashMap<>();
+          data.put(Field.GATEWAY_MAC, deviceAddress);
+          successCallbackCommand(Command.START_UPGRADE_GATEWAY, data);
+        }
+
+        @Override
+        public void onDfuAborted(String deviceAddress) {
+
+        }
+
+        @Override
+        public void onProgressChanged(String deviceAddress, int percent, float speed, float avgSpeed, int currentPart, int partsTotal) {
+          Map<String, Object> data = new HashMap<>();
+          data.put("status", TTLockUpgradeStatus.upgrading.ordinal());
+          data.put("progress", percent);
+          progressCallbackCommand(Command.START_UPGRADE_GATEWAY, data);
+        }
+
+        @Override
+        public void onError() {
+          errorCallbackCommand(Command.START_UPGRADE_GATEWAY, TTLockUpgradeError.upgradeFail.ordinal(), "");
+        }
+      });
+    } else {//相当于重试
+      switch (Integer.valueOf(params.get(Field.DFU_TYPE))) {
+        case 0://net
+          GatewayDfuClient.getDefault().retryEnterDfuModeByNet();
+          break;
+        case 1://bluetooth
+          GatewayDfuClient.getDefault().retryEnterDfuModeByBle();
+          break;
+      }
+    }
+  }
+
+  private void startUpgradeGatewayByFWPackage() {
+    GatewayDfuClient.getDefault().startDfu(context, params.get(Field.GATEWAY_MAC), params.get(Field.FIRMWARE_PACKAGE), new com.ttlock.bl.sdk.gateway.callback.DfuCallback() {
       @Override
       public void onDfuSuccess(String deviceAddress) {
         Map<String, String> data = new HashMap<>();

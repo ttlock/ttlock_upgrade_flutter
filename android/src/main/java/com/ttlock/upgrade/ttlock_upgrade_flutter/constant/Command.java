@@ -11,4 +11,6 @@ public class Command {
 
     public static final String STOP_UPGRADE_GATEWAY = "stopUpgradeGateway";
 
+    public static final String START_UPGRADE_GATEWAY_BY_FIRMWARE_PACKAGE = "startUpgradeGatewayByFirmwarePackage";
+
 }
