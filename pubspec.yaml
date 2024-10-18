@@ -1,7 +1,7 @@
 name: ttlock_upgrade_flutter
-description: A new flutter plugin project.
+description: TTLock upgrade sdk.
 version: 0.0.1
-homepage:
+homepage: https://github.com/ttlock/ttlock_upgrade_flutter
 
 environment:
   sdk: ">=2.12.0 <3.0.0"

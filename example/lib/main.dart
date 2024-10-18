@@ -42,9 +42,6 @@ class _MyAppState extends State<MyApp> {
         // print("升级失败");
         // print(errorCode);
       });
-
-
-
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
