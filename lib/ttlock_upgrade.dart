@@ -160,7 +160,7 @@ class TtlockUpgrade {
       TTUpgradeLockSuccessCallback upgradeLockSuccessCallback =
           _upgradeSuccessCallback;
       upgradeLockSuccessCallback(data["lockData"]);
-    } else if (command == "startUpgradeGateway") {
+    } else if (command == "startUpgradeGateway" || command == "startUpgradeGatewayByFirmwarePackage") {
       _upgradeSuccessCallback();
     }
   }

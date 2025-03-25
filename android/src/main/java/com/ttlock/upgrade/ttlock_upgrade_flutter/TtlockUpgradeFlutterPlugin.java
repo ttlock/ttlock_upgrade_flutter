@@ -89,6 +89,9 @@ public class TtlockUpgradeFlutterPlugin implements FlutterPlugin, MethodCallHand
       case Command.STOP_UPGRADE_GATEWAY:
         stopUpgradeGateway();
         break;
+      case Command.START_UPGRADE_GATEWAY_BY_FIRMWARE_PACKAGE:
+        startUpgradeGatewayByFWPackage();
+        break;
     }
   }
 
@@ -206,7 +209,7 @@ public class TtlockUpgradeFlutterPlugin implements FlutterPlugin, MethodCallHand
       public void onDfuSuccess(String deviceAddress) {
         Map<String, String> data = new HashMap<>();
         data.put(Field.GATEWAY_MAC, deviceAddress);
-        successCallbackCommand(Command.START_UPGRADE_GATEWAY, data);
+        successCallbackCommand(Command.START_UPGRADE_GATEWAY_BY_FIRMWARE_PACKAGE, data);
       }
 
       @Override
@@ -219,12 +222,12 @@ public class TtlockUpgradeFlutterPlugin implements FlutterPlugin, MethodCallHand
         Map<String, Object> data = new HashMap<>();
         data.put("status", TTLockUpgradeStatus.upgrading.ordinal());
         data.put("progress", percent);
-        progressCallbackCommand(Command.START_UPGRADE_GATEWAY, data);
+        progressCallbackCommand(Command.START_UPGRADE_GATEWAY_BY_FIRMWARE_PACKAGE, data);
       }
 
       @Override
       public void onError() {
-        errorCallbackCommand(Command.START_UPGRADE_GATEWAY, TTLockUpgradeError.upgradeFail.ordinal(), "");
+        errorCallbackCommand(Command.START_UPGRADE_GATEWAY_BY_FIRMWARE_PACKAGE, TTLockUpgradeError.upgradeFail.ordinal(), "");
       }
     });
   }
