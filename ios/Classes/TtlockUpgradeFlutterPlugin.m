@@ -77,10 +77,14 @@
         TTGatewayDFUType dfuType = [dict[@"dfuType"] intValue];
         
         [[TTGatewayDFU shareInstance] startDfuWithType:dfuType clientId:clientId accessToken:accessToken gatewayId:gatewayId gatewayMac:gatewayMac successBlock:^(UpgradeOpration type, NSInteger process) {
-            NSMutableDictionary *dict = [NSMutableDictionary new];
-            dict[@"status"] = @(type);
-            dict[@"process"] = @(process);
-            [weakSelf callbackCommand:call.method resultCode:0 data:dict errorCode:0 errorMessage:nil];
+           if (type == UpgradeOprationSuccess) {
+                [self callbackCommand:call.method resultCode:0 data:dict errorCode:0 errorMessage:nil];
+            }else{
+                NSMutableDictionary *dict = [NSMutableDictionary new];
+                dict[@"status"] = @(type);
+                dict[@"progress"] = @(process);
+                [self callbackCommand:call.method resultCode:1 data:dict errorCode:0 errorMessage:nil];
+            }
         } failBlock:^(UpgradeOpration type, UpgradeErrorCode code) {
             [weakSelf callbackCommand:call.method resultCode:2 data:dict errorCode:code errorMessage:nil];
         }];
@@ -92,9 +96,14 @@
         NSString *firmwarePackage = dict[@"firmwarePackage"];
    
         [[TTGatewayDFU shareInstance] startDfuWithFirmwarePackage:firmwarePackage gatewayMac:gatewayMac successBlock:^(UpgradeOpration type, NSInteger process) {
-            NSMutableDictionary *dict = [NSMutableDictionary new];
-            dict[@"status"] = @(type);
-            dict[@"process"] = @(process);
+            if (type == UpgradeOprationSuccess) {
+                [self callbackCommand:call.method resultCode:0 data:dict errorCode:0 errorMessage:nil];
+            }else{
+                NSMutableDictionary *dict = [NSMutableDictionary new];
+                dict[@"status"] = @(type);
+                dict[@"progress"] = @(process);
+                [self callbackCommand:call.method resultCode:1 data:dict errorCode:0 errorMessage:nil];
+            }
         } failBlock:^(UpgradeOpration type, UpgradeErrorCode code) {
             [weakSelf callbackCommand:call.method resultCode:2 data:dict errorCode:code errorMessage:nil];
         }];
