@@ -25,6 +25,7 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
+    namespace = "com.ttlock.upgrade.ttlock_upgrade_flutter"
     compileSdkVersion 30
 
     defaultConfig {

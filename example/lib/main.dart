@@ -19,7 +19,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+   // initPlatformState();
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -28,9 +28,7 @@ class _MyAppState extends State<MyApp> {
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
     try {
-      platformVersion =
-          await TtlockUpgrade.platformVersion ?? 'Unknown platform version';
-
+      print("开始升级2222");
       TtlockUpgrade.startUpgradeLock("lockmac", "lockData", "firmwarePackage",
           (status, progress) {
         // print("升级进度");
@@ -46,14 +44,6 @@ class _MyAppState extends State<MyApp> {
       platformVersion = 'Failed to get platform version.';
     }
 
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
   }
 
   @override
@@ -64,7 +54,12 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: GestureDetector(
+            onTap: (){
+              initPlatformState();
+            },
+            child: Text('Running on: $_platformVersion\n'),
+          ),
         ),
       ),
     );
