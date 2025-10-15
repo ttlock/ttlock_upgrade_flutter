@@ -20,5 +20,15 @@ public class Field {
     public static final String DFU_TYPE = "dfuType";
 
     public static final String FW_PACKAGE = "firmwarePackage";
+
+    public static final String DEVICE_TYPE = "deviceType";
+
+    public static final String DEVICE_ID = "deviceId";
+
+    public static final String DEVICE_MAC = "deviceMac";
+
+    public static final String SLOT_NUMBER = "slotNumber";
+
+    public static final String FEATURE_VALUE = "featureValue";
     
 }

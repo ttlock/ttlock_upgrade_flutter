@@ -6,6 +6,12 @@ enum TTLockUpgradeStatus { preparing, upgrading, recovering }
 enum TTLockUpgradeReuslt { success, progress, fail }
 enum TTDfuType { net, bluetooth }
 
+enum TTDeviceType {
+  WATER_METER,
+  ELECTRIC_METER,
+  KEYPAD
+}
+
 enum TTLockUpgradeError {
   success,
   peripheralPoweredOff,
@@ -46,6 +52,10 @@ class TtlockUpgrade {
         await _commandChannel.invokeMethod('getPlatformVersion');
     return version;
   }
+
+  static final String START_UPGRADE_OTHER_DEVICE = "startUpgradeOtherDevice";
+
+  static final String STOP_UPGRADE_OTHER_DEVICE = "stopUpgradeOtherDevice";
 
   static startUpgradeLock(
       String lockmac,
@@ -112,6 +122,44 @@ class TtlockUpgrade {
         (TTLockUpgradeError error, String msg) {});
   }
 
+  static startUpgradeOtherDevice({
+        required TTDeviceType deviceType,
+        required String clientId,
+        required String accessToken,
+        required int deviceId,
+        required String deviceMac,
+        String? lockData,
+        int? slotNumber,
+        String? featureValue,
+        required TTUpgradeProgressCallback progressCallback,
+        required TTSuccessCallback successCallback,
+        required TTUpgradeFailedCallback failedCallback
+  }) {
+    Map map = Map();
+    map["deviceType"] = deviceType;
+    map["clientId"] = clientId;
+    map["accessToken"] = accessToken;
+    map["deviceId"] = deviceId;
+    map["deviceMac"] = deviceMac;
+    map["lockData"] = lockData??'';
+    map["slotNumber"] = slotNumber??0;
+    map["featureValue"] = featureValue??'';
+    invoke(START_UPGRADE_OTHER_DEVICE, map, successCallback, progressCallback,
+        failedCallback);
+  }
+
+  static stopUpgradeOtherDevice() {
+    invoke(
+        STOP_UPGRADE_OTHER_DEVICE,
+        Map(),
+        () {},
+        (TTLockUpgradeStatus status, int progress) {},
+        (TTLockUpgradeError error, String msg) {});
+  }
+
+
+
+
   static bool isListenEvent = false;
   static void invoke(String command, Object? parameter, dynamic success,
       TTUpgradeProgressCallback progress, TTUpgradeFailedCallback fail) {
@@ -160,7 +208,9 @@ class TtlockUpgrade {
       TTUpgradeLockSuccessCallback upgradeLockSuccessCallback =
           _upgradeSuccessCallback;
       upgradeLockSuccessCallback(data["lockData"]);
-    } else if (command == "startUpgradeGateway" || command == "startUpgradeGatewayByFirmwarePackage") {
+    } else if (command == "startUpgradeGateway"
+        || command == "startUpgradeGatewayByFirmwarePackage"
+    || command == START_UPGRADE_OTHER_DEVICE) {
       _upgradeSuccessCallback();
     }
   }
