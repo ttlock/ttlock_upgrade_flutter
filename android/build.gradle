@@ -31,6 +31,11 @@ android {
     defaultConfig {
         minSdkVersion 18
     }
+
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -38,5 +43,6 @@ dependencies {
    // implementation 'com.ttlock:ttlock:3.5.0'
     implementation 'com.google.code.gson:gson:2.6.2'
     implementation(name: 'ttlock-release', ext: 'aar')
-    implementation 'no.nordicsemi.android:dfu:1.11.1'
+    implementation 'no.nordicsemi.android:dfu:2.5.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 }

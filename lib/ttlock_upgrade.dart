@@ -55,6 +55,8 @@ class TtlockUpgrade {
 
   static final String START_UPGRADE_OTHER_DEVICE = "startUpgradeOtherDevice";
 
+  static final String START_UPGRADE_OTHER_DEVICE_WITH_PACKAGE = "startUpgradeOtherDeviceWithPackage";
+
   static final String STOP_UPGRADE_OTHER_DEVICE = "stopUpgradeOtherDevice";
 
   static startUpgradeLock(
@@ -137,14 +139,38 @@ class TtlockUpgrade {
   }) {
     Map map = Map();
     map["deviceType"] = deviceType;
-    map["clientId"] = clientId;
+    map["clientId"] = clientId.toString();
     map["accessToken"] = accessToken;
     map["deviceId"] = deviceId;
     map["deviceMac"] = deviceMac;
     map["lockData"] = lockData??'';
-    map["slotNumber"] = slotNumber??0;
+    map["slotNumber"] = (slotNumber??0).toString();
     map["featureValue"] = featureValue??'';
     invoke(START_UPGRADE_OTHER_DEVICE, map, successCallback, progressCallback,
+        failedCallback);
+  }
+
+  static startUpgradeOtherDeviceWithPackage({
+    required TTDeviceType deviceType,
+    required int deviceId,
+    required String deviceMac,
+    required String firmwarePackage,
+    String? lockData,
+    int? slotNumber,
+    String? featureValue,
+    required TTUpgradeProgressCallback progressCallback,
+    required TTSuccessCallback successCallback,
+    required TTUpgradeFailedCallback failedCallback
+  }) {
+    Map map = Map();
+    map["deviceType"] = deviceType.name;
+    map["deviceId"] = deviceId.toString();
+    map["deviceMac"] = deviceMac;
+    map["firmwarePackage"] = firmwarePackage;
+    map["lockData"] = lockData??'';
+    map["slotNumber"] = (slotNumber??0).toString();
+    map["featureValue"] = featureValue??'';
+    invoke(START_UPGRADE_OTHER_DEVICE_WITH_PACKAGE, map, successCallback, progressCallback,
         failedCallback);
   }
 
@@ -210,7 +236,8 @@ class TtlockUpgrade {
       upgradeLockSuccessCallback(data["lockData"]);
     } else if (command == "startUpgradeGateway"
         || command == "startUpgradeGatewayByFirmwarePackage"
-    || command == START_UPGRADE_OTHER_DEVICE) {
+    || command == START_UPGRADE_OTHER_DEVICE
+    || command == START_UPGRADE_OTHER_DEVICE_WITH_PACKAGE) {
       _upgradeSuccessCallback();
     }
   }

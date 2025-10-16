@@ -15,6 +15,8 @@ public class Command {
 
     public static final String START_UPGRADE_OTHER_DEVICE = "startUpgradeOtherDevice";
 
+    public static final String START_UPGRADE_OTHER_DEVICE_WITH_PACKAGE = "startUpgradeOtherDeviceWithPackage";
+
     public static final String STOP_UPGRADE_OTHER_DEVICE = "stopUpgradeOtherDevice";
 
 }
