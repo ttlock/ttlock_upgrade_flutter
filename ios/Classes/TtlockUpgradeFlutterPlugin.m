@@ -107,10 +107,77 @@
         } failBlock:^(UpgradeOpration type, UpgradeErrorCode code) {
             [weakSelf callbackCommand:call.method resultCode:2 data:dict errorCode:code errorMessage:nil];
         }];
+        
+    }else if ([@"startUpgradeOtherDeviceWithPackage" isEqualToString:call.method]){
+        NSDictionary *dict = call.arguments;
+        NSString *deviceType = dict[@"deviceType"];
+        NSString *deviceId = dict[@"deviceId"];
+        
+        NSString *deviceMac = dict[@"deviceMac"];
+        NSString *firmwarePackage = dict[@"firmwarePackage"];
+        NSString *lockData = dict[@"lockData"];
+        NSString *slotNumber = dict[@"slotNumber"];
+        NSString *featureValue = dict[@"featureValue"];
+        NSDictionary *deviceTypeDict = @{@"0": @(TTDeviceTypeWaterMeter), @"1": @(TTDeviceTypeElectricMeter), @"2": @(TTDeviceTypeKeypad)};
+        
+        TTDeviceDFUModel *deviceDfuModel = [[TTDeviceDFUModel alloc] init];
+        deviceDfuModel.type = [deviceTypeDict[deviceType] intValue];
+        deviceDfuModel.deviceId = [deviceId intValue];
+        deviceDfuModel.deviceMac = deviceMac;
+        deviceDfuModel.lockData = lockData;
+        deviceDfuModel.slotNumber = [slotNumber intValue];
+        deviceDfuModel.featureValue = featureValue;
+    
+        [[TTDeviceDFU shareInstance] startDfuWithFirmwarePackage:firmwarePackage deviceModel:deviceDfuModel successBlock:^(UpgradeOpration type, NSInteger process) {
+            if (type == UpgradeOprationSuccess) {
+                [self callbackCommand:call.method resultCode:0 data:dict errorCode:0 errorMessage:nil];
+            }else{
+                NSMutableDictionary *dict = [NSMutableDictionary new];
+                dict[@"status"] = @(type);
+                dict[@"progress"] = @(process);
+                [self callbackCommand:call.method resultCode:1 data:dict errorCode:0 errorMessage:nil];
+            }
+        } failBlock:^(UpgradeOpration type, UpgradeErrorCode code) {
+            [weakSelf callbackCommand:call.method resultCode:2 data:dict errorCode:code errorMessage:nil];
+        }];
+    }else if ([@"startUpgradeOtherDevice" isEqualToString:call.method]){
+        NSDictionary *dict = call.arguments;
+        NSString *deviceType = dict[@"deviceType"];
+        NSString *deviceId = dict[@"deviceId"];
+        NSString *deviceMac = dict[@"deviceMac"];
+        NSString *clientId = dict[@"clientId"];
+        NSString *accessToken = dict[@"accessToken"];
+        NSString *lockData = dict[@"lockData"];
+        NSString *slotNumber = dict[@"slotNumber"];
+        NSString *featureValue = dict[@"featureValue"];
+        NSDictionary *deviceTypeDict = @{@"0": @(TTDeviceTypeWaterMeter), @"1": @(TTDeviceTypeElectricMeter), @"2": @(TTDeviceTypeKeypad)};
+        
+        TTDeviceDFUModel *deviceDfuModel = [[TTDeviceDFUModel alloc] init];
+        deviceDfuModel.type = [deviceTypeDict[deviceType] intValue];
+        deviceDfuModel.deviceId = [deviceId intValue];
+        deviceDfuModel.deviceMac = deviceMac;
+        deviceDfuModel.lockData = lockData;
+        deviceDfuModel.slotNumber = [slotNumber intValue];
+        deviceDfuModel.featureValue = featureValue;
+    
+        [[TTDeviceDFU shareInstance] startDfuWithClientId:clientId accessToken:accessToken deviceModel:deviceDfuModel successBlock:^(UpgradeOpration type, NSInteger process) {
+            if (type == UpgradeOprationSuccess) {
+                [self callbackCommand:call.method resultCode:0 data:dict errorCode:0 errorMessage:nil];
+            }else{
+                NSMutableDictionary *dict = [NSMutableDictionary new];
+                dict[@"status"] = @(type);
+                dict[@"progress"] = @(process);
+                [self callbackCommand:call.method resultCode:1 data:dict errorCode:0 errorMessage:nil];
+            }
+        } failBlock:^(UpgradeOpration type, UpgradeErrorCode code) {
+            [weakSelf callbackCommand:call.method resultCode:2 data:dict errorCode:code errorMessage:nil];
+        }];
     }else if ([@"stopUpgradeLock" isEqualToString:call.method]){
         [[TTLockDFU shareInstance] endUpgrade];
     }else if ([@"stopUpgradeGateway" isEqualToString:call.method]){
         [[TTGatewayDFU shareInstance] endUpgrade];
+    }else if ([@"stopUpgradeOtherDevice" isEqualToString:call.method]){
+        [[TTDeviceDFU shareInstance] endUpgrade];
     }
     else {
         result(FlutterMethodNotImplemented);
