@@ -118,7 +118,7 @@
         NSString *lockData = dict[@"lockData"];
         NSString *slotNumber = dict[@"slotNumber"];
         NSString *featureValue = dict[@"featureValue"];
-        NSDictionary *deviceTypeDict = @{@"0": @(TTDeviceTypeWaterMeter), @"1": @(TTDeviceTypeElectricMeter), @"2": @(TTDeviceTypeKeypad)};
+        NSDictionary *deviceTypeDict = @{@"WATER_METER": @(TTDeviceTypeWaterMeter), @"ELECTRIC_METER": @(TTDeviceTypeElectricMeter), @"KEYPAD": @(TTDeviceTypeKeypad)};
         
         TTDeviceDFUModel *deviceDfuModel = [[TTDeviceDFUModel alloc] init];
         deviceDfuModel.type = [deviceTypeDict[deviceType] intValue];
@@ -150,7 +150,7 @@
         NSString *lockData = dict[@"lockData"];
         NSString *slotNumber = dict[@"slotNumber"];
         NSString *featureValue = dict[@"featureValue"];
-        NSDictionary *deviceTypeDict = @{@"0": @(TTDeviceTypeWaterMeter), @"1": @(TTDeviceTypeElectricMeter), @"2": @(TTDeviceTypeKeypad)};
+        NSDictionary *deviceTypeDict = @{@"WATER_METER": @(TTDeviceTypeWaterMeter), @"ELECTRIC_METER": @(TTDeviceTypeElectricMeter), @"KEYPAD": @(TTDeviceTypeKeypad)};
         
         TTDeviceDFUModel *deviceDfuModel = [[TTDeviceDFUModel alloc] init];
         deviceDfuModel.type = [deviceTypeDict[deviceType] intValue];
