@@ -11,9 +11,13 @@ import com.ttlock.bl.sdk.api.TTLockClient;
 import com.ttlock.bl.sdk.callback.DfuCallback;
 import com.ttlock.bl.sdk.callback.GetLockSystemInfoCallback;
 import com.ttlock.bl.sdk.constant.Constant;
+import com.ttlock.bl.sdk.dfu.DeviceDfuClient;
+import com.ttlock.bl.sdk.dfu.DeviceDfuModel;
+import com.ttlock.bl.sdk.dfu.DeviceType;
 import com.ttlock.bl.sdk.entity.DeviceInfo;
 import com.ttlock.bl.sdk.entity.LockError;
 import com.ttlock.bl.sdk.gateway.api.GatewayDfuClient;
+import com.ttlock.bl.sdk.keypad.WirelessKeypadClient;
 import com.ttlock.bl.sdk.util.DigitUtil;
 import com.ttlock.bl.sdk.util.LogUtil;
 import com.ttlock.upgrade.ttlock_upgrade_flutter.constant.Command;
@@ -24,6 +28,7 @@ import com.ttlock.upgrade.ttlock_upgrade_flutter.model.TTLockUpgradeStatus;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.EventChannel;
@@ -83,6 +88,17 @@ public class TtlockUpgradeFlutterPlugin implements FlutterPlugin, MethodCallHand
       case Command.STOP_UPGRADE_GATEWAY:
           stopUpgradeGateway();
         break;
+      case Command.START_UPGRADE_OTHER_DEVICE:
+        startUpgradeOtherDevice();
+        break;
+      case Command.START_UPGRADE_OTHER_DEVICE_WITH_PACKAGE:
+        startUpgradeOtherDeviceWithPackage();
+        break;
+      case Command.STOP_UPGRADE_OTHER_DEVICE:
+        DeviceDfuClient.getInstance().abortDfu();
+        successCallbackCommand(Command.STOP_UPGRADE_OTHER_DEVICE, new HashMap());
+        break;
+
     }
   }
 
@@ -179,6 +195,92 @@ public class TtlockUpgradeFlutterPlugin implements FlutterPlugin, MethodCallHand
   private void stopUpgradeGateway() {
     GatewayDfuClient.getDefault().abortDfu();
     successCallbackCommand(Command.STOP_UPGRADE_GATEWAY, new HashMap());
+  }
+
+  private void startUpgradeOtherDevice()
+  {
+    DeviceDfuModel deviceModel = new DeviceDfuModel();
+    deviceModel.setType(DeviceType.valueOf(params.get(Field.DEVICE_TYPE)));
+    deviceModel.setDeviceId(Integer.parseInt(Objects.requireNonNull(params.get(Field.DEVICE_ID))));
+    deviceModel.setDeviceMac(params.get(Field.DEVICE_MAC));
+    deviceModel.setLockData(params.get(Field.LOCK_DATA));
+    deviceModel.setSlotNumber(Integer.parseInt(Objects.requireNonNull(params.get(Field.SLOT_NUMBER))));
+    deviceModel.setFeatureValue(params.get(Field.FEATURE_VALUE));
+
+    DeviceDfuClient.getInstance().startDfu(context, params.get(Field.CLIENT_ID), params.get(Field.ACCESS_TOKEN), deviceModel, new com.ttlock.bl.sdk.dfu.DfuCallback() {
+      @Override
+      public void onProgressChanged(String deviceAddress, int percent, float speed, float avgSpeed, int currentPart, int partsTotal) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("status", TTLockUpgradeStatus.upgrading.ordinal());
+        data.put("progress", percent);
+        progressCallbackCommand(Command.START_UPGRADE_OTHER_DEVICE, data);
+      }
+
+      @Override
+      public void onStatusChanged(int i) {
+
+      }
+
+      @Override
+      public void onDfuSuccess(String deviceAddress) {
+        Map<String, String> data = new HashMap<>();
+        successCallbackCommand(Command.START_UPGRADE_OTHER_DEVICE, data);
+      }
+
+      @Override
+      public void onDfuError(int i, String s) {
+        errorCallbackCommand(Command.START_UPGRADE_OTHER_DEVICE, TTLockUpgradeError.upgradeFail.ordinal(), s);
+
+      }
+
+      @Override
+      public void onDfuAborted(String s) {
+
+      }
+    });
+  }
+
+  //  升级之前调用 设置初始化参数 电表为例： ElectricMeterClient.getDefault().setClientParam();
+  private void startUpgradeOtherDeviceWithPackage()
+  {
+    DeviceDfuModel deviceModel = new DeviceDfuModel();
+    deviceModel.setType(DeviceType.valueOf(params.get(Field.DEVICE_TYPE)));
+    deviceModel.setDeviceId(Integer.parseInt(Objects.requireNonNull(params.get(Field.DEVICE_ID))));
+    deviceModel.setDeviceMac(params.get(Field.DEVICE_MAC));
+    deviceModel.setLockData(params.get(Field.LOCK_DATA));
+    deviceModel.setSlotNumber(Integer.parseInt(Objects.requireNonNull(params.get(Field.SLOT_NUMBER))));
+    deviceModel.setFeatureValue(params.get(Field.FEATURE_VALUE));
+    DeviceDfuClient.getInstance().startDfu(context,deviceModel, params.get(Field.FIRMWARE_PACKAGE), new com.ttlock.bl.sdk.dfu.DfuCallback() {
+      @Override
+      public void onProgressChanged(String deviceAddress, int percent, float speed, float avgSpeed, int currentPart, int partsTotal) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("status", TTLockUpgradeStatus.upgrading.ordinal());
+        data.put("progress", percent);
+        progressCallbackCommand(Command.START_UPGRADE_OTHER_DEVICE_WITH_PACKAGE, data);
+      }
+
+      @Override
+      public void onStatusChanged(int i) {
+
+      }
+
+      @Override
+      public void onDfuSuccess(String deviceAddress) {
+        Map<String, String> data = new HashMap<>();
+        successCallbackCommand(Command.START_UPGRADE_OTHER_DEVICE_WITH_PACKAGE, data);
+      }
+
+      @Override
+      public void onDfuError(int i, String s) {
+        errorCallbackCommand(Command.START_UPGRADE_OTHER_DEVICE_WITH_PACKAGE, TTLockUpgradeError.upgradeFail.ordinal(), s);
+
+      }
+
+      @Override
+      public void onDfuAborted(String s) {
+
+      }
+    });
   }
 
   @Override
