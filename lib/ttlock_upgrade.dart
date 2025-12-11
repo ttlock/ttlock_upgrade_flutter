@@ -103,32 +103,6 @@ class TtlockUpgrade {
 
   static startUpgradeOtherDevice({
     required TTDeviceType deviceType,
-    required String clientId,
-    required String accessToken,
-    required int deviceId,
-    required String deviceMac,
-    String? lockData,
-    int? slotNumber,
-    String? featureValue,
-    required TTUpgradeProgressCallback progressCallback,
-    required TTSuccessCallback successCallback,
-    required TTUpgradeFailedCallback failedCallback
-  }) {
-    Map map = Map();
-    map["deviceType"] = deviceType;
-    map["clientId"] = clientId.toString();
-    map["accessToken"] = accessToken;
-    map["deviceId"] = deviceId;
-    map["deviceMac"] = deviceMac;
-    map["lockData"] = lockData??'';
-    map["slotNumber"] = (slotNumber??0).toString();
-    map["featureValue"] = featureValue??'';
-    invoke(START_UPGRADE_OTHER_DEVICE, map, successCallback, progressCallback,
-        failedCallback);
-  }
-
-  static startUpgradeOtherDeviceWithPackage({
-    required TTDeviceType deviceType,
     required int deviceId,
     required String deviceMac,
     required String firmwarePackage,
@@ -147,7 +121,7 @@ class TtlockUpgrade {
     map["lockData"] = lockData??'';
     map["slotNumber"] = (slotNumber??0).toString();
     map["featureValue"] = featureValue??'';
-    invoke(START_UPGRADE_OTHER_DEVICE_WITH_PACKAGE, map, successCallback, progressCallback,
+    invoke(START_UPGRADE_OTHER_DEVICE, map, successCallback, progressCallback,
         failedCallback);
   }
 
@@ -210,7 +184,7 @@ class TtlockUpgrade {
       upgradeLockSuccessCallback(data["lockData"]);
     } else if (command == "startUpgradeGateway"
         || command == START_UPGRADE_OTHER_DEVICE
-        || command == START_UPGRADE_OTHER_DEVICE_WITH_PACKAGE) {
+        ) {
       _upgradeSuccessCallback();
     }
   }

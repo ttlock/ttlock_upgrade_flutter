@@ -30,7 +30,8 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 30
+    namespace 'com.ttlock.upgrade.ttlock_upgrade_flutter'
+    compileSdkVersion 34
 
     defaultConfig {
         minSdkVersion 18

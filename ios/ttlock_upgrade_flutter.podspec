@@ -16,11 +16,11 @@ A new flutter plugin project.
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
-  s.platform = :ios, '9.0'
-  s.dependency 'iOSDFULibrary', '4.11.0'
+  s.platform = :ios, '12.0'
+  s.dependency 'iOSDFULibrary', '4.14.0'
   s.static_framework = true
-  # s.vendored_frameworks = "Frameworks/**/*.framework"
-  s.dependency 'TTLockDFUOnPremise', '2.1.3'
+#   s.vendored_frameworks = "Frameworks/**/*.framework"
+  s.dependency 'TTLockDFUOnPremise', '2.2.0'
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
