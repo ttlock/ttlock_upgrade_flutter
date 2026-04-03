@@ -2,11 +2,11 @@ PODS:
   - Flutter (1.0.0)
   - iOSDFULibrary (4.14.0):
     - ZIPFoundation (= 0.9.16)
-  - TTLock (3.5.6)
+  - TTLock (3.6.8)
   - ttlock_upgrade_flutter (0.0.1):
     - Flutter
     - TTLockDFU
-  - TTLockDFU (3.5.6):
+  - TTLockDFU (3.6.8):
     - iOSDFULibrary (~> 4.14.0)
     - TTLock
   - ZIPFoundation (0.9.16)
@@ -31,11 +31,11 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   iOSDFULibrary: 69d3eebb0a992b37ccfe6baa4113b30632659fa3
-  TTLock: 5ab7f92c61d6e84cf9e6656aefbce4d25f825348
-  ttlock_upgrade_flutter: ff9ce0fe6a74a4dfab740df90bac80dc9384e485
-  TTLockDFU: 2faacc43f69a1e92b389961653e572f3f2acae2c
+  TTLock: 38fc351b450e0f0a71fe48fc99e05bd108a87550
+  ttlock_upgrade_flutter: d5982d6379f4e94e02513f241da86995f72a19cf
+  TTLockDFU: 26dff2e59f8bcc2b8e0f970588ae1b49aa68b3f1
   ZIPFoundation: d170fa8e270b2a32bef9dcdcabff5b8f1a5deced
 
 PODFILE CHECKSUM: 1a782344d33c12ced0182eeab11e8668d253eb48
 
-COCOAPODS: 1.16.2
+COCOAPODS: 1.15.2
